@@ -12,7 +12,7 @@ module.exports = {
         } catch (error) {
             next(error);
         }
-        
+
         return next();
     }
 };
