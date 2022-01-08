@@ -1,9 +1,10 @@
-const app = require('./app');
 const mongoose = require('mongoose');
+const app = require('./app');
+const { ENV } = require('./src/configs/config');
 const PORT = 3000;
 /** Database Connection */
 mongoose.connect(
-  "mongodb+srv://admin:12345@cluster0.9aczl.mongodb.net/Cache", {
+  ENV.DB_URL, {
   //useMongoClient: true,
   useNewUrlParser: false
 }).then(

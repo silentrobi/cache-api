@@ -1,12 +1,12 @@
 const request = require("supertest");
 const mongoose = require('mongoose');
 const app = require('../app');
-
+const { ENV } = require('../src/configs/config');
 describe("Cache-API e2e test", () => {
 
     beforeAll(async () =>
         await mongoose.connect(
-            "mongodb+srv://admin:12345@cluster0.9aczl.mongodb.net/Cache", {
+            ENV.DB_URL, {
             useNewUrlParser: false
         })
     );
