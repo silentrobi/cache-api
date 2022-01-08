@@ -21,7 +21,7 @@ app.use(cors(corsOptions));
 app.use(morgan('combined'));
 
 /** Api routes */
-app.use('/', routerCache);
+app.use('/cache', routerCache);
 
 /** Error handler Middleware */
 app.use((error, req, res, next) => handleError(error, res));

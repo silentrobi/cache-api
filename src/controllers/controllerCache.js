@@ -8,7 +8,7 @@ module.exports = {
         return controllerGeneric.genericControllerMethod(
             `${fileName}/getOne`,
             200, res, next,
-            async () => await serviceCache.getSignleCache(req.params)
+            async () => await serviceCache.getSignleCache(req.params.key)
         );
     },
     async getKeys(req, res, next) {
