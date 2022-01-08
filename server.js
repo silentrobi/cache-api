@@ -5,7 +5,6 @@ const PORT = 3000;
 /** Database Connection */
 mongoose.connect(
   ENV.DB_URL, {
-  //useMongoClient: true,
   useNewUrlParser: false
 }).then(
   con => {
@@ -15,5 +14,5 @@ mongoose.connect(
   }
 ).catch((err) => {
   console.log(err);
-  console.log("DB connection failed")
+  console.log("DB connection failed!")
 });
