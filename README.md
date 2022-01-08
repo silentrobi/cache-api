@@ -20,3 +20,10 @@
 ```
 - Deletes a key: `/DELETE /cache/:key`
 - Deletes all key: `/DELETE /cache`
+
+
+## Key points about the project:
+- Cache evict mechanism is FIFO based.
+- TTL is implemented using MongoDB TTL feature. (`createdAt` Cache Object field is responsible for that).
+- `e2e` testing is added to the project. However, due to lime limitation I couldn't done all the necessary testing like: unit testing, adding more test cases in `e2e` testing.
+-  MongoDB URL: `mongodb+srv://admin:12345@cluster0.9aczl.mongodb.net/Cache`
