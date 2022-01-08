@@ -22,21 +22,21 @@ module.exports = {
         return controllerGeneric.genericControllerMethod(
             `${fileName}/upsert`,
             200, res, next,
-            async () => await serviceCache.upsertSingleCache()
+            async () => await serviceCache.upsertSingleCache(req.body)
         );
     },
     async deleteOne(req, res, next) {
         return controllerGeneric.genericControllerMethod(
             `${fileName}/deleteOne`,
             200, res, next,
-            async () => await serviceCache.deleteSingleCache()
+            async () => await serviceCache.deleteSingleCache(req.params.key)
         );
     },
     async deleteAll(req, res, next) {
         return controllerGeneric.genericControllerMethod(
             `${fileName}/deleteAll`,
             200, res, next,
-            async () => await serviceCache.deleteSingleCache()
+            async () => await serviceCache.deleteAllCache()
         );
     }
 };

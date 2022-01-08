@@ -1,25 +1,15 @@
 const mongoose = require("mongoose");
 
-const UserSchema = new mongoose.Schema({
-    name: {
-        type: String,
-        required: true,
-    },
-    age: {
-        type: Number,
-        default: 0,
-    },
-    data: {
+const CacheSchema = new mongoose.Schema({
+    key: String,
+    value: {
         type: Object,
         required: true
     },
-    createdAt: {
-        type: Date,
-        required: true
-    }
-});
+
+}, { timestamps: true });
 
 
-const User = mongoose.model("User", UserSchema);
+const CacheModel = mongoose.model("Cache", CacheSchema);
 
-module.exports = User;
+module.exports = CacheModel;
