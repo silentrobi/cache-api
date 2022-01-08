@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const DEFAULT_EXPIRE_TIME = 15;
+const DEFAULT_EXPIRE_TIME = 60;
 const CacheSchema = new mongoose.Schema({
     key: String,
     value: {

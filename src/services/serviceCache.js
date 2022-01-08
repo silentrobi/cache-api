@@ -93,7 +93,6 @@ module.exports = {
                         result = await cache.save();
                     } else {
 
-
                         if (await this.getCacheSize() >= MAX_CACHE_SIZE) {
                             // apply FIFO
                             const firstCachItem = (await CacheModel.find({}).sort({ "_id": 1 }).limit(1))[0];
@@ -102,7 +101,6 @@ module.exports = {
                         }
 
                         result = await CacheModel.create(cacheObject);
-
                     }
                 });
 
