@@ -5,7 +5,6 @@ const mongoose = require('mongoose');
 
 const fileName = `controllers/serviceCache`;
 const MAX_CACHE_SIZE = 5;
-
 module.exports = {
 
     /**
@@ -34,7 +33,7 @@ module.exports = {
                     } else {
 
                         console.log("Cache miss");
-                        result = tools.generateRadomString(30);
+                        result = tools.generateRadomString();
                         if (await this.getCacheSize() >= MAX_CACHE_SIZE) {
 
                             // apply FIFO
@@ -84,7 +83,7 @@ module.exports = {
         return await serviceGeneric.genericServiceMethod(`${fileName}/upsertSingleCache`,
             async () => {
                 let result;
-                
+
                 const session = await mongoose.startSession();
 
                 await session.withTransaction(async () => {
@@ -106,7 +105,7 @@ module.exports = {
 
                     }
                 });
-                
+
                 return result;
             });
     },

@@ -42,7 +42,6 @@ describe("Cache-API e2e test", () => {
         });
     });
 
-
     describe("Test GET requests", () => {
         it('get cache key list', async () => {
             const response = await request(app).get("/cache/");
@@ -60,9 +59,45 @@ describe("Cache-API e2e test", () => {
 
             expect(response.statusCode).toBe(200);
             expect(response.body.desc).toBe("success");
-            expect(typeof response.body.result  === 'string').toBe(true);
+            expect(typeof response.body.result === 'string').toBe(true);
             expect(response.body.result).toMatch('valueUpdated');
+        });
+
+        it('cache miss and gerenerate random hex string ', async () => {
+            const testcase = "random"
+
+            const response = await request(app).get(`/cache/${testcase}`);
+
+            const isHex = (target) => new RegExp().test('/[0-9A-Fa-f]{6}/g');
+            expect(response.statusCode).toBe(200);
+            expect(response.body.desc).toBe("success");
+            expect(typeof response.body.result === 'string').toBe(true);
+            expect(isHex(response.body.result)).toBe(true);
         });
     });
 
+    describe('Test DELETE requests', () => {
+        it('delete  a cache with key ', async () => {
+            const testcase = "test1"
+
+            const response = await request(app).delete(`/cache/${testcase}`);
+
+            expect(response.statusCode).toBe(200);
+            expect(response.body.desc).toBe("success");
+            expect(response.body.result.deletedCount).toBeGreaterThan(0);
+        });
+    });
+
+    describe('Test DELETE requests', () => {
+        it('delete  all keys ', async () => {
+            const testcase = "test1"
+
+            const getKeys = await request(app).get(`/cache/`);
+            const response = await request(app).delete(`/cache/`);
+
+            expect(response.statusCode).toBe(200);
+            expect(response.body.desc).toBe("success");
+            expect(response.body.result.deletedCount).toBe(getKeys.body.result.length);
+        });
+    });
 });

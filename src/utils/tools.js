@@ -1,6 +1,6 @@
 var crypto = require("crypto");
 module.exports = {
-    generateRadomString(n){
-        return crypto.randomBytes(n).toString('hex');;
+    generateRadomString(){
+        return crypto.randomBytes(20).toString('hex');
     }
 }
