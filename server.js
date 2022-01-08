@@ -5,7 +5,8 @@ const PORT = 3000;
 mongoose.connect(
   "mongodb+srv://admin:12345@cluster0.9aczl.mongodb.net/Cache", {
   //useMongoClient: true,
-  useNewUrlParser: false
+  useNewUrlParser: false,
+  useCreateIndex: true
 }).then(
   con => {
     app.listen(PORT, () => {

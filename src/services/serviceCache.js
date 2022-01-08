@@ -13,23 +13,30 @@ module.exports = {
     * @param {String} key 
     * @returns 
     */
-    async getSignleCache(key) {
+    async getSingleCache(key) {
         return await serviceGeneric.genericServiceMethod(`${fileName}/getSignleCache`,
             async () => {
                 let result = {};
 
                 const session = await mongoose.startSession();
-                const cache = await CacheModel.findOne({ key });
 
-                if (cache) {
-                    console.log("Cache hit");
-                    result = cache.value;
+                await session.withTransaction(async () => {
+                    const cache = await CacheModel.findOne({ key });
 
-                } else {
-                    await session.withTransaction(async () => {
+                    if (cache) {
+                        console.log("Cache hit");
+                        result = cache.value;
+
+                        // reseting cache
+                        cache.createdAt = new Date();
+                        cache.save();
+
+                    } else {
+
                         console.log("Cache miss");
                         result = tools.generateRadomString(30);
                         if (await this.getCacheSize() >= MAX_CACHE_SIZE) {
+
                             // apply FIFO
                             const firstCachItem = (await CacheModel.find({}).sort({ "_id": 1 }).limit(1))[0];
 
@@ -40,8 +47,8 @@ module.exports = {
                             key: key,
                             value: result
                         });
-                    });
-                }
+                    }
+                });
 
                 session.endSession();
 
@@ -77,21 +84,29 @@ module.exports = {
         return await serviceGeneric.genericServiceMethod(`${fileName}/upsertSingleCache`,
             async () => {
                 let result;
-                const cache = await CacheModel.findOne({ key: cacheObject.key });
-                if (cache) {
-                    cache.value = cacheObject.value;
-                    result = await cache.save();
-                } else {
-                    if (await this.getCacheSize() >= MAX_CACHE_SIZE) {
-                        // apply FIFO
-                        const firstCachItem = (await CacheModel.find({}).sort({ "_id": 1 }).limit(1))[0];
+                
+                const session = await mongoose.startSession();
 
-                        this.deleteSingleCache(firstCachItem.key);
+                await session.withTransaction(async () => {
+                    const cache = await CacheModel.findOne({ key: cacheObject.key });
+                    if (cache) {
+                        cache.value = cacheObject.value;
+                        result = await cache.save();
+                    } else {
+
+
+                        if (await this.getCacheSize() >= MAX_CACHE_SIZE) {
+                            // apply FIFO
+                            const firstCachItem = (await CacheModel.find({}).sort({ "_id": 1 }).limit(1))[0];
+
+                            this.deleteSingleCache(firstCachItem.key);
+                        }
+
+                        result = await CacheModel.create(cacheObject);
+
                     }
-
-                    result = await CacheModel.create(cacheObject);
-                }
-
+                });
+                
                 return result;
             });
     },
