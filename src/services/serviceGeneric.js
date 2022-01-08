@@ -1,4 +1,4 @@
-const { ErrorHandler } = require("../utils/error");
+const { ErrorHandler, errorCodes } = require("../utils/error");
 
 module.exports = {
     async genericServiceMethod(functionName, internalMethod) {
@@ -6,8 +6,7 @@ module.exports = {
             console.log(`Controller method called: ${functionName}`);
             return await internalMethod();
         } catch (error) {
-            // Map error from services and throw new ErrorHandler
-            throw new ErrorHandler(1000, error.message);
+            throw new ErrorHandler(errorCodes.GENEREL_ERROR, error.message);
         }
     }
 }

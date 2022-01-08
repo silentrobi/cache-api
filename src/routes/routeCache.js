@@ -14,7 +14,7 @@ router.get(`/:key`, controllerCache.getOne);
 router.get(`/`, controllerCache.getKeys);
 
 /**
- * Creates a cache with given key or updates existing one
+ * Creates a cache with given key or updates the existing one
  */
 router.post(`/`, validatorCache.validateUpsert, controllerCache.upsert);
 

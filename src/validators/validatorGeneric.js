@@ -1,5 +1,5 @@
 const Joi = require('joi');
-const { ErrorHandler } = require('../utils/error');
+const { ErrorHandler, errorCodes } = require('../utils/error');
 
 module.exports = {
     async validateGeneric(joiObj, data, next, options = {}) {
@@ -7,7 +7,7 @@ module.exports = {
             const schema = Joi.object(joiObj);
             const { error } = schema.validate(data, options);
             if (error) {
-                throw new ErrorHandler(400, error.message);
+                throw new ErrorHandler(errorCodes.VALIDATION_ERROR, error.message);
             }
         } catch (error) {
             next(error);
