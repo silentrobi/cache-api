@@ -9,6 +9,7 @@ module.exports = {
 
     /**
     * Return a given key's value. If key is not exist then return random string value.
+    * reset createdAt date when cache hit
     * @param {String} key 
     * @returns 
     */
@@ -26,10 +27,9 @@ module.exports = {
                         console.log("Cache hit");
                         result = cache.value;
 
-                        // reseting cache
+                        // reseting cache TTL
                         cache.createdAt = new Date();
                         cache.save();
-
                     } else {
 
                         console.log("Cache miss");
@@ -132,6 +132,11 @@ module.exports = {
                 return await CacheModel.deleteMany({});
             });
     },
+
+    /**
+    * Return cache counts in DB
+    * @returns 
+    */
     async getCacheSize() {
         return await serviceGeneric.genericServiceMethod(`${fileName}/getCacheSize`,
             async () => {
@@ -139,7 +144,3 @@ module.exports = {
             });
     }
 };
-
-
-//check maximum cache size
-//
