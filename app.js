@@ -5,8 +5,7 @@ const cors = require('cors');
 const morgan = require('morgan');
 const { handleError } = require('./src/utils/error');
 const routerCache = require('./src/routes/routeCache');
-const mongoose = require('mongoose');
-const db = require('./src/configs/db');
+
 const app = express();
 
 /** Middlewares */
