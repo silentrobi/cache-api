@@ -1,5 +1,6 @@
 module.exports = {
-        PostRequest:{
-            MESSAGE: "message"
+        UPSERT_BODY:{
+            KEY: "key",
+            VALUE: "value"
         }
 };

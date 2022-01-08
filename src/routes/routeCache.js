@@ -1,5 +1,6 @@
 const express = require('express');
 const controllerCache = require('../controllers/controllerCache');
+const validatorCache = require('../validators/validatorCache');
 const router = express.Router();
 
 /**
@@ -15,7 +16,7 @@ router.get(`/`, controllerCache.getKeys);
 /**
  * Creates a cache with given key or updates existing one
  */
-router.post(`/`, controllerCache.upsert);
+router.post(`/`, validatorCache.validateUpsert, controllerCache.upsert);
 
 /**
  * Removes a cache data with given key

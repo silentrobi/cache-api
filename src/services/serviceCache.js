@@ -1,8 +1,10 @@
 const CacheModel = require("../models/cache");
 const tools = require("../utils/tools");
 const serviceGeneric = require("./serviceGeneric");
+const mongoose = require('mongoose');
 
-const fileName = `controllers/serviceHello`;
+const fileName = `controllers/serviceCache`;
+const MAX_CACHE_SIZE = 5;
 
 module.exports = {
 
@@ -15,20 +17,33 @@ module.exports = {
         return await serviceGeneric.genericServiceMethod(`${fileName}/getSignleCache`,
             async () => {
                 let result = {};
+
+                const session = await mongoose.startSession();
                 const cache = await CacheModel.findOne({ key });
 
                 if (cache) {
                     console.log("Cache hit");
                     result = cache.value;
-                } else {
-                    console.log("Cache miss");
-                    result = tools.generateRadomString(30);
 
-                    await CacheModel.create({
-                        key: key,
-                        value: result
+                } else {
+                    await session.withTransaction(async () => {
+                        console.log("Cache miss");
+                        result = tools.generateRadomString(30);
+                        if (await this.getCacheSize() >= MAX_CACHE_SIZE) {
+                            // apply FIFO
+                            const firstCachItem = (await CacheModel.find({}).sort({ "_id": 1 }).limit(1))[0];
+
+                            this.deleteSingleCache(firstCachItem.key);
+                        }
+
+                        await CacheModel.create({
+                            key: key,
+                            value: result
+                        });
                     });
                 }
+
+                session.endSession();
 
                 return result;
             });
@@ -53,7 +68,8 @@ module.exports = {
     },
 
     /**
-     * Create/Update cache data by given key field
+     * Create/Update cache data by given key field.
+     * If cache size limit reached then use FIFO as evict policy
      * @param {Object} cacheObject 
      * @returns 
      */
@@ -66,6 +82,13 @@ module.exports = {
                     cache.value = cacheObject.value;
                     result = await cache.save();
                 } else {
+                    if (await this.getCacheSize() >= MAX_CACHE_SIZE) {
+                        // apply FIFO
+                        const firstCachItem = (await CacheModel.find({}).sort({ "_id": 1 }).limit(1))[0];
+
+                        this.deleteSingleCache(firstCachItem.key);
+                    }
+
                     result = await CacheModel.create(cacheObject);
                 }
 
@@ -95,4 +118,14 @@ module.exports = {
                 return await CacheModel.deleteMany({});
             });
     },
+    async getCacheSize() {
+        return await serviceGeneric.genericServiceMethod(`${fileName}/getCacheSize`,
+            async () => {
+                return await CacheModel.estimatedDocumentCount();
+            });
+    }
 };
+
+
+//check maximum cache size
+//
