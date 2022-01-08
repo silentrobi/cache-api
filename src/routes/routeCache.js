@@ -26,6 +26,6 @@ router.delete(`/:key`, controllerCache.deleteOne);
 /**
  * Removes all keys
  */
-router.delete(`/keys`, controllerCache.deleteAll);
+router.delete(`/`, controllerCache.deleteAll);
 
 module.exports = router;
